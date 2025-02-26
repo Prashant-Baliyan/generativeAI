@@ -1,0 +1,8 @@
+{
+  "dependencies":["."],
+  "graphs":{
+    "openai_agent":"./openai_agents.py:blog_agent"
+  },
+  "env":"../.env"
+
+}
