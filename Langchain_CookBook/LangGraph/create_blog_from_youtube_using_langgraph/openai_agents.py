@@ -90,10 +90,14 @@ builder.add_edge(START, "Document_Loader")
 builder.add_edge("Document_Loader", "Blog_Creator")
 builder.add_edge("Blog_Creator", "Reviewer")
 builder.add_edge("Reviewer", "HumanFeedback")
-builder.add_conditional_edges("HumanFeedback", should_continue, "Blog_Refiner")
+builder.add_conditional_edges(
+    "HumanFeedback",
+    should_continue,
+    {
+        "No": END,
+        "Yes": "Blog_Refiner",
+    })
 builder.add_edge("Blog_Refiner", "Reviewer")
-builder.add_edge("HumanFeedback", END)
-
 
 #memory = MemorySaver()
 graph = builder.compile(interrupt_before=['HumanFeedback'])
@@ -101,7 +105,9 @@ graph = builder.compile(interrupt_before=['HumanFeedback'])
 video_url = input("Please provide the Youtube link for blog generation: ")
 state = State(video_url=video_url)
 output_state = graph.invoke(state)
-#print(output_state.blog_content)
+
+print("Generated blog content:")
+print(output_state['blog_content'])
 
 ## simulate the human feedback interuruption and resumption 
 refine_blog_input = input("Do you want to refine the blog? (Yes/No): ").strip().lower()
